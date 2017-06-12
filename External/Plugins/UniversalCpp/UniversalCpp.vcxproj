@@ -134,7 +134,7 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Assets\Plugins\WSA\x86\
-xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\ParellelTasking\Plugins\x86\</Command>
+xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\UnityPluginHandling\Plugins\x86\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -150,7 +150,7 @@ xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\ParellelTasking\Pl
     </Link>
     <PostBuildEvent>
       <Command>xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Assets\Plugins\WSA\x86\
-xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\ParellelTasking\Plugins\x86\</Command>
+xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\UnityPluginHandling\Plugins\x86\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm'">

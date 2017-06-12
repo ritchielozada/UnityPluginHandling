@@ -13,5 +13,15 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="WrcCppClass.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityEventQueue.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityGraphics.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityGraphicsD3D9.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityGraphicsD3D11.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityGraphicsD3D12.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityGraphicsMetal.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityInterface.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UniversalWRCCpp.def" />
   </ItemGroup>
 </Project>

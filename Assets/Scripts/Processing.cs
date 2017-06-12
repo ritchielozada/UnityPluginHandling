@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define WRCCPP
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -15,8 +17,7 @@ public class Processing : MonoBehaviour
     public TextMesh StatusText2;
     public Renderer RenderTexture;
     public float SampleDuration = 5f;
-    
-    
+        
     private int counter;
     private float endTime;
     private float fpsMeasure;
@@ -32,16 +33,32 @@ public class Processing : MonoBehaviour
     private UniversalCSharp.PluginTask pluginTask;
     private UniversalWRCCSharp.PluginTask pluginTaskWRC;
 
+#if WRCCPP
+    [DllImport("UniversalWRCCpp")]
+#else
     [DllImport("UniversalCpp")]
+#endif
     private static extern void SetTextureFromUnity(System.IntPtr texture, int w, int h);
 
+#if WRCCPP
+    [DllImport("UniversalWRCCpp")]
+#else
     [DllImport("UniversalCpp")]
+#endif
     private static extern void ProcessBuffer(IntPtr data, uint dataSize);
 
+#if WRCCPP
+    [DllImport("UniversalWRCCpp")]
+#else
     [DllImport("UniversalCpp")]
+#endif
     private static extern IntPtr GetRenderEventFunc();
 
+#if WRCCPP
+    [DllImport("UniversalWRCCpp")]
+#else
     [DllImport("UniversalCpp")]
+#endif
     private static extern void SetPluginMode(int mode);
 #endif
 

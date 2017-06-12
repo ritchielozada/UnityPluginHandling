@@ -128,11 +128,11 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <ModuleDefinitionFile>UniversalWRCCpp.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Assets\Plugins\WSA\x86\
-xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\ParellelTasking\Plugins\x86\
-</Command>
+xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\UnityPluginHandling\Plugins\x86\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -148,10 +148,11 @@ xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\ParellelTasking\Pl
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <ModuleDefinitionFile>UniversalWRCCpp.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Assets\Plugins\WSA\x86\
-xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\ParellelTasking\Plugins\x86\</Command>
+xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\UnityPluginHandling\Plugins\x86\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
@@ -167,6 +168,7 @@ xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\ParellelTasking\Pl
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <ModuleDefinitionFile>UniversalWRCCpp.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
@@ -182,6 +184,7 @@ xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\ParellelTasking\Pl
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <ModuleDefinitionFile>UniversalWRCCpp.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -197,6 +200,7 @@ xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\ParellelTasking\Pl
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <ModuleDefinitionFile>UniversalWRCCpp.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -212,10 +216,18 @@ xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\ParellelTasking\Pl
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <ModuleDefinitionFile>UniversalWRCCpp.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityEventQueue.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityGraphics.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityGraphicsD3D11.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityGraphicsD3D12.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityGraphicsD3D9.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityGraphicsMetal.h" />
+    <ClInclude Include="UnityPluginAPI\IUnityInterface.h" />
     <ClInclude Include="WrcCppClass.h" />
   </ItemGroup>
   <ItemGroup>
@@ -228,6 +240,9 @@ xcopy /F /R /I /Y $(TargetPath) $(SolutionDir)..\..\Build\UWP\ParellelTasking\Pl
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="WrcCppClass.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UniversalWRCCpp.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
