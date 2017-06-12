@@ -1,0 +1,9 @@
+LIBRARY
+
+EXPORTS
+   UnityPluginLoad
+   UnityPluginUnload
+   ProcessBuffer
+   SetTextureFromUnity
+   GetRenderEventFunc
+   SetPluginMode
