@@ -25,21 +25,11 @@ static ID3D11Device* m_Device;
 void* textureDataPtr;
 bool isARGBFrameReady = false;
 
-//byte* yuvDataBuf = NULL;
-//byte* yDataBuf = NULL;
-//byte* uDataBuf = NULL;
-//byte* vDataBuf = NULL;
-//int yuvDataBufLen = 0;
-
 unsigned int pixelSize = 4;
 unsigned int yStrideBuf = 0;
 unsigned int uStrideBuf = 0;
 unsigned int vStrideBuf = 0;
 
-//byte* h264DataBuf = NULL;
-//unsigned int h264DataBufLen = 0;
-//unsigned int wH264Frame = textureWidth;
-//unsigned int hH264Frame = textureHeight;
 byte* argbDataBuf = NULL;
 
 static void UNITY_INTERFACE_API OnGraphicsDeviceEvent(UnityGfxDeviceEventType eventType);
@@ -47,11 +37,6 @@ static void UNITY_INTERFACE_API OnGraphicsDeviceEvent(UnityGfxDeviceEventType ev
 
 void ReleaseVideoBuffers()
 {
-	// Release Byte Buffers
-	//	if (yuvDataBuf != NULL)
-	//		delete[] yuvDataBuf;
-	//	if (h264DataBuf != NULL)
-	//		delete[] h264DataBuf;
 	if (argbDataBuf != NULL)
 		delete[] argbDataBuf;
 }
@@ -60,11 +45,6 @@ void InitializeVideoProcessing()
 {
 	// Pre-Allocate Buffers instead of dynamic allocation and release
 	int bufSize = g_TextureWidth * g_TextureHeight * pixelSize;
-
-//	yuvDataBuf = new byte[bufSize];
-//	memset(yuvDataBuf, 0, bufSize);
-//	h264DataBuf = new byte[bufSize];
-//	memset(h264DataBuf, 0, bufSize);
 
 	ReleaseVideoBuffers();
 
