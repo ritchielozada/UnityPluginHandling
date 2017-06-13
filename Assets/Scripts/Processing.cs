@@ -26,8 +26,8 @@ public class Processing : MonoBehaviour
 
 #if !UNITY_EDITOR && UNITY_WSA
     private bool isImageFrameReady = false;
-    private const int textureWidth = 2000;
-    private const int textureHeight = 2000;
+    private const int textureWidth = 500;
+    private const int textureHeight = 500;
     private float TextureScale = 1f;
     private int PluginMode = 2;
     
@@ -87,8 +87,9 @@ public class Processing : MonoBehaviour
         SetPluginMode(PluginMode);
         StartCoroutine(CallPluginAtEndOfFrames());
 #endif
+        
 
-        // Very Slow Coroutine
+        // Very Slow Coroutine - Slows down execution thread
         //StartCoroutine(SlowCoroutine());
     }
 
