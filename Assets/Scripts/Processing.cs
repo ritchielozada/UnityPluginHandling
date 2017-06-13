@@ -22,17 +22,19 @@ public class Processing : MonoBehaviour
     private float endTime;
     private float fpsMeasure;
     private int taskCount;
+    private string pluginMessage;
 
 #if !UNITY_EDITOR && UNITY_WSA
     private bool isImageFrameReady = false;
-    private const int textureWidth = 1000;
-    private const int textureHeight = 1000;
+    private const int textureWidth = 2000;
+    private const int textureHeight = 2000;
     private float TextureScale = 1f;
     private int PluginMode = 2;
     
     private UniversalCSharp.PluginTask pluginTask;
     private UniversalWRCCSharp.PluginTask pluginTaskWRC;
 
+    #region GRAPHICS PLUGIN
 #if WRCCPP
     [DllImport("UniversalWRCCpp")]
 #else
@@ -60,6 +62,7 @@ public class Processing : MonoBehaviour
     [DllImport("UniversalCpp")]
 #endif
     private static extern void SetPluginMode(int mode);
+    #endregion
 #endif
 
     void Start()
@@ -70,7 +73,10 @@ public class Processing : MonoBehaviour
         endTime = Time.time + SampleDuration;
 
 #if !UNITY_EDITOR && UNITY_WSA
-        pluginTask = new UniversalCSharp.PluginTask();
+        pluginTask = new UniversalCSharp.PluginTask("Plugin!", 100);
+        pluginTask.OnCallbackEvent += OnCallbackEvent;
+        pluginTask.StartThread();
+
         pluginTaskWRC = new UniversalWRCCSharp.PluginTask();
         StatusText2.text = string.Format(
             "{0}\n{1}", 
@@ -82,12 +88,14 @@ public class Processing : MonoBehaviour
         StartCoroutine(CallPluginAtEndOfFrames());
 #endif
 
-        // Slow Coroutine
+        // Very Slow Coroutine
         //StartCoroutine(SlowCoroutine());
-
-
-
     }
+
+    private void OnCallbackEvent(int i, string s)
+    {
+        pluginMessage = string.Format("{0} - {1}", i, s);
+    }    
 
     void Update()
     {
@@ -96,13 +104,18 @@ public class Processing : MonoBehaviour
         {
             endTime = Time.time + SampleDuration;
             fpsMeasure = counter / SampleDuration;
-            counter = 0;
-            StatusText.text = string.Format("FPS: {0:0.00} - {1}", fpsMeasure, taskCount);
+            counter = 0;            
         }
+        StatusText.text = string.Format(
+            "FPS: {0:0.00} - {1}\n{2}",
+            fpsMeasure,
+            taskCount,
+            pluginMessage);
     }
 
     IEnumerator SlowCoroutine()
     {
+        // 4K Resolution Test
         while (true)
         {
             for (int x = 0; x < 3840; x++)

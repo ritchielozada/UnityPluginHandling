@@ -125,6 +125,9 @@ extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API ProcessBuffer(byte* b
 
 void ProcessTestFrameDataThread()
 {
+	float scaleval = 127.0f;
+	
+
 	while (true)
 	{
 		if (!g_TextureHandle)
@@ -148,12 +151,14 @@ void ProcessTestFrameDataThread()
 			for (int x = 0; x < g_TextureWidth; ++x)
 			{
 				// Simple "plasma effect": several combined sine waves
-				int vv = int(
-					(127.0f + (127.0f * sinf(x / 7.0f + t))) +
-					(127.0f + (127.0f * sinf(y / 5.0f - t))) +
-					(127.0f + (127.0f * sinf((x + y) / 6.0f - t))) +
-					(127.0f + (127.0f * sinf(sqrtf(float(x*x + y*y)) / 4.0f - t)))
-					) / 4;
+				/*int vv = int(
+					(scaleval + (scaleval * sinf(x / 7.0f + t))) +
+					(scaleval + (scaleval * sinf(y / 5.0f - t))) +
+					(scaleval + (scaleval * sinf((x + y) / 6.0f - t))) +
+					(scaleval + (scaleval * sinf(sqrtf(float(x*x + y*y)) / 4.0f - t)))
+					) / 4;*/
+
+				int vv = int(scaleval + (scaleval * sinf(x / 7.0f * (500.0f / g_TextureWidth) + t))) / 4;
 
 				ptr[0] = vv / 2;
 				ptr[1] = vv;
@@ -169,7 +174,7 @@ void ProcessTestFrameDataThread()
 		}
 
 		isARGBFrameReady = true;
-		Sleep(15);
+		Sleep(30);
 	}
 
 	// Texture Update is executed when Unity triggers the render event to avoid collision
