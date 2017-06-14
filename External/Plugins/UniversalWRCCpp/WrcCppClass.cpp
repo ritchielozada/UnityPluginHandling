@@ -262,13 +262,18 @@ static void UNITY_INTERFACE_API OnRenderEvent(int eventID)
 		ProcessTestFrameData();
 		break;
 	case 2:		// Invoke
-		m.lock();
-		if (isARGBFrameReady)
+
+		// Process only when the thread is not-updating the image frame
+		// TODO: Handle a fallback force lock and update when not skipped multiple times beyond threshould count
+		if (m.try_lock())
 		{
-			UpdateUnityTexture(g_TextureHandle, g_TextureWidth * pixelSize, argbDataBuf);
-			isARGBFrameReady = false;
+			if (isARGBFrameReady)
+			{
+				UpdateUnityTexture(g_TextureHandle, g_TextureWidth * pixelSize, argbDataBuf);
+				isARGBFrameReady = false;
+			}
+			m.unlock();
 		}
-		m.unlock();
 		break;
 	}
 }
