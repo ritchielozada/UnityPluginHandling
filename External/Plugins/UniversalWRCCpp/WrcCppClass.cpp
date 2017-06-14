@@ -8,6 +8,7 @@
 #include "UnityPluginAPI/IUnityInterface.h"
 #include "UnityPluginAPI/IUnityGraphicsD3D11.h"
 #include <thread>
+#include <mutex>
 
 using namespace UniversalWRCCpp;
 using namespace Platform;
@@ -19,6 +20,9 @@ WrcCppClass::WrcCppClass()
 
 // Plugin Mode
 int PluginMode = 0;
+
+std::mutex m;
+std::thread backgroundThread;
 
 static void* g_TextureHandle = NULL;
 static int   g_TextureWidth = 0;
@@ -126,7 +130,6 @@ extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API ProcessBuffer(byte* b
 void ProcessTestFrameDataThread()
 {
 	float scaleval = 127.0f;
-	
 
 	while (true)
 	{
@@ -138,11 +141,11 @@ void ProcessTestFrameDataThread()
 
 		//int bufSize = g_TextureWidth * g_TextureHeight * pixelSize;
 		const float t = g_Time * 4.0f;
-		g_Time += 0.03f;
-
-		// TODO: Setup Mutex/Lock for isARGBFrameReady/argbDataBuf
-		// Quick solution to coordinate render status
+		g_Time += 0.02f;
+		
+		m.lock();
 		isARGBFrameReady = false;
+		m.unlock();
 
 		byte* dst = argbDataBuf;
 		for (int y = 0; y < g_TextureHeight; ++y)
@@ -150,38 +153,25 @@ void ProcessTestFrameDataThread()
 			byte* ptr = dst;
 			for (int x = 0; x < g_TextureWidth; ++x)
 			{
-				// Simple "plasma effect": several combined sine waves
-				/*int vv = int(
-					(scaleval + (scaleval * sinf(x / 7.0f + t))) +
-					(scaleval + (scaleval * sinf(y / 5.0f - t))) +
-					(scaleval + (scaleval * sinf((x + y) / 6.0f - t))) +
-					(scaleval + (scaleval * sinf(sqrtf(float(x*x + y*y)) / 4.0f - t)))
-					) / 4;*/
-
 				int vv = int(scaleval + (scaleval * sinf(x / 7.0f * (500.0f / g_TextureWidth) + t))) / 4;
 
-				ptr[0] = vv / 2;
-				ptr[1] = vv;
+				ptr[0] = vv;
+				ptr[1] = vv; 
 				ptr[2] = vv;
 				ptr[3] = 255;
 
 				// To next pixel (our pixels are 4 bpp)
 				ptr += 4;
 			}
-
 			// To next image row
 			dst += pixelSize * g_TextureWidth;
 		}
 
+		m.lock();
 		isARGBFrameReady = true;
-		Sleep(30);
+		m.unlock();
+		Sleep(5);
 	}
-
-	// Texture Update is executed when Unity triggers the render event to avoid collision
-	// between the plugin and Unity's graphics update.  Data can be manipulated but graphics
-	// needs to follow Unity render event.	
-	//
-	//UpdateUnityTexture(g_TextureHandle, g_TextureWidth * pixelSize, argbDataBuf);
 }
 
 extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API SetPluginMode(int mode)
@@ -191,8 +181,8 @@ extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API SetPluginMode(int mod
 	if (PluginMode == 2)
 	{
 		// Starts the display update thread and detach to run continuously
-		std::thread t(ProcessTestFrameDataThread);
-		t.detach();
+		backgroundThread = std::thread(ProcessTestFrameDataThread);
+		backgroundThread.detach();
 	}
 }
 
@@ -272,11 +262,13 @@ static void UNITY_INTERFACE_API OnRenderEvent(int eventID)
 		ProcessTestFrameData();
 		break;
 	case 2:		// Invoke
+		m.lock();
 		if (isARGBFrameReady)
 		{
 			UpdateUnityTexture(g_TextureHandle, g_TextureWidth * pixelSize, argbDataBuf);
 			isARGBFrameReady = false;
 		}
+		m.unlock();
 		break;
 	}
 }

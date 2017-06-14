@@ -111,7 +111,7 @@ public class Processing : MonoBehaviour
             "FPS: {0:0.00} - {1}\n{2}",
             fpsMeasure,
             taskCount,
-            pluginMessage);
+            pluginMessage);        
     }
 
     IEnumerator SlowCoroutine()
@@ -134,7 +134,7 @@ public class Processing : MonoBehaviour
     private void CreateTextureAndPassToPlugin()
     {
         RenderTexture.transform.localScale = new Vector3(-TextureScale, (float)textureHeight / textureWidth * TextureScale, 1f);
-        Texture2D tex = new Texture2D(textureWidth, textureHeight, TextureFormat.ARGB32, false);
+        Texture2D tex = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
         tex.filterMode = FilterMode.Point;
         tex.Apply();
         RenderTexture.material.mainTexture = tex;

@@ -7,10 +7,13 @@
 #include "UnityPluginAPI/IUnityInterface.h"
 #include "UnityPluginAPI/IUnityGraphicsD3D11.h"
 #include <thread>
-
+#include <mutex>
 
 // Plugin Mode
 int PluginMode = 0;
+
+std::mutex m;
+std::thread backgroundThread;
 
 static void* g_TextureHandle = NULL;
 static int   g_TextureWidth = 0;
@@ -23,6 +26,7 @@ static UnityGfxRenderer s_DeviceType = kUnityGfxRendererNull;
 static ID3D11Device* m_Device;
 
 void* textureDataPtr;
+byte* argbDataBuf = NULL;
 bool isARGBFrameReady = false;
 
 unsigned int pixelSize = 4;
@@ -30,10 +34,7 @@ unsigned int yStrideBuf = 0;
 unsigned int uStrideBuf = 0;
 unsigned int vStrideBuf = 0;
 
-byte* argbDataBuf = NULL;
-
 static void UNITY_INTERFACE_API OnGraphicsDeviceEvent(UnityGfxDeviceEventType eventType);
-
 
 void ReleaseVideoBuffers()
 {
@@ -125,13 +126,12 @@ void ProcessTestFrameDataThread()
 			continue;;
 		}
 
-		//int bufSize = g_TextureWidth * g_TextureHeight * pixelSize;
 		const float t = g_Time * 4.0f;
 		g_Time += 0.03f;
-
-		// TODO: Setup Mutex/Lock for isARGBFrameReady/argbDataBuf
-		// Quick solution to coordinate render status
+		
+		m.lock();
 		isARGBFrameReady = false;
+		m.unlock();
 
 		byte* dst = argbDataBuf;
 		for (int y = 0; y < g_TextureHeight; ++y)
@@ -160,7 +160,9 @@ void ProcessTestFrameDataThread()
 			dst += pixelSize * g_TextureWidth;
 		}
 
+		m.lock();
 		isARGBFrameReady = true;
+		m.unlock();
 		Sleep(15);
 	}
 
@@ -178,8 +180,8 @@ extern "C" void UNITY_INTERFACE_EXPORT UNITY_INTERFACE_API SetPluginMode(int mod
 	if (PluginMode == 2)
 	{
 		// Starts the display update thread and detach to run continuously
-		std::thread t(ProcessTestFrameDataThread);
-		t.detach();
+		backgroundThread = std::thread(ProcessTestFrameDataThread);
+		backgroundThread.detach();
 	}
 }
 
@@ -259,11 +261,14 @@ static void UNITY_INTERFACE_API OnRenderEvent(int eventID)
 		ProcessTestFrameData();
 		break;
 	case 2:		// Invoke
+		
+		m.lock();
 		if (isARGBFrameReady)
 		{
-			UpdateUnityTexture(g_TextureHandle, g_TextureWidth * pixelSize, argbDataBuf);
+			UpdateUnityTexture(g_TextureHandle, g_TextureWidth * pixelSize, argbDataBuf);			
 			isARGBFrameReady = false;
 		}
+		m.unlock();
 		break;
 	}
 }
